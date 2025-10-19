@@ -10,19 +10,21 @@
   <header>
     <div class="brand">
       <div class="logo">🎬</div>
-      <div><h1>My HOME Cinema</h1></div>
+      <h1>My HOME Cinema</h1>
     </div>
 
     <nav class="nav-links">
       <a href="#" id="homeLink">Home</a> |
       <a href="#" id="moviesLink">Movies</a> |
-      <a href="#" id="tvLink">TV Shows</a>
+      <a href="#" id="tvLink">TV Shows</a> |
+      <a href="#" id="koreanLink">Korean</a> |
+      <a href="#" id="pelikulaLink">Pelikula</a>
     </nav>
 
     <div class="controls">
       <input id="searchInput" type="search" placeholder="Search movies or TV — press Enter" />
       <button id="searchBtn">Search</button>
-      <select id="filterType" class="toggle" title="Filter type">
+      <select id="filterType" class="toggle">
         <option value="all">All</option>
         <option value="movie">Movies</option>
         <option value="tv">TV Shows</option>
@@ -42,8 +44,23 @@
         <div id="tvGrid" class="grid"></div>
       </section>
 
+      <section class="section" id="koreanMoviesSection" style="display:none;">
+        <h2>Korean Movies</h2>
+        <div id="koreanMoviesGrid" class="grid"></div>
+      </section>
+
+      <section class="section" id="kdramaSection" style="display:none;">
+        <h2>Kdrama</h2>
+        <div id="kdramaGrid" class="grid"></div>
+      </section>
+
+      <section class="section" id="pelikulaSection" style="display:none;">
+        <h2>Pelikula (Pinoy Movies)</h2>
+        <div id="pelikulaGrid" class="grid"></div>
+      </section>
+
       <footer>
-        <div class="note">Click any movie or TV show to choose a server and play it directly.</div>
+        <div class="note">Click any title to choose a server and play directly.</div>
       </footer>
     </div>
   </main>
@@ -63,15 +80,12 @@
       <span class="close-btn server-close">&times;</span>
       <h2>Select a Server</h2>
       <select id="serverSelect" class="toggle"></select>
-
-      <!-- Season & Episode for TV Shows -->
-      <div id="tvOptions" style="display:none; margin-top:10px;">
+      <div id="tvOptions" style="display:none;margin-top:10px;">
         <label>Season:</label>
         <select id="seasonSelect" class="toggle"></select>
         <label>Episode:</label>
         <select id="episodeSelect" class="toggle"></select>
       </div>
-
       <button id="playBtn">Play</button>
     </div>
   </div>
