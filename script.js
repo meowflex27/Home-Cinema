@@ -253,3 +253,78 @@ window.addEventListener('scroll', () => {
 });
 
 loadTrending('home');
+
+// ===============================
+// 🔍 SEARCH FUNCTIONALITY
+// ===============================
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const filterType = document.getElementById('filterType');
+const searchModal = document.getElementById('searchModal');
+const searchResults = document.getElementById('searchResults');
+const searchCloseBtn = searchModal.querySelector('.close-btn');
+
+searchBtn.addEventListener('click', handleSearch);
+searchInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter') handleSearch();
+});
+searchCloseBtn.addEventListener('click', () => {
+  searchModal.style.display = 'none';
+});
+
+async function handleSearch() {
+  const query = searchInput.value.trim();
+  if (!query) {
+    alert('Please enter a movie or TV title to search.');
+    return;
+  }
+
+  const type = filterType.value;
+  searchResults.innerHTML = `<p style="color:var(--muted);text-align:center;">Searching for "${query}"...</p>`;
+  searchModal.style.display = 'flex';
+
+  try {
+    let urls = [];
+    if (type === 'all') {
+      urls = [
+        `${baseUrl}search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&include_adult=false`,
+        `${baseUrl}search/tv?api_key=${apiKey}&query=${encodeURIComponent(query)}&include_adult=false`
+      ];
+    } else if (type === 'movie') {
+      urls = [`${baseUrl}search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&include_adult=false`];
+    } else if (type === 'tv') {
+      urls = [`${baseUrl}search/tv?api_key=${apiKey}&query=${encodeURIComponent(query)}&include_adult=false`];
+    }
+
+    const allResults = [];
+    for (const url of urls) {
+      const data = await fetchJSON(url);
+      if (data.results && data.results.length) allResults.push(...data.results);
+    }
+
+    searchResults.innerHTML = '';
+    if (allResults.length === 0) {
+      searchResults.innerHTML = `<p style="color:var(--muted);text-align:center;">No results found for "${query}".</p>`;
+      return;
+    }
+
+    // Filter out adult content / blank posters
+    const safeResults = allResults.filter(
+      item => !item.adult && item.poster_path
+    );
+
+    safeResults.forEach(item => {
+      const typeGuess = item.media_type || (item.title ? 'movie' : 'tv');
+      searchResults.append(makeCard(item, typeGuess));
+    });
+
+  } catch (error) {
+    console.error(error);
+    searchResults.innerHTML = `<p style="color:red;text-align:center;">Failed to load search results.</p>`;
+  }
+}
+
+// Close modal on outside click
+window.addEventListener('click', e => {
+  if (e.target === searchModal) searchModal.style.display = 'none';
+});
